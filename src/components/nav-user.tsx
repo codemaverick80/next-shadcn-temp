@@ -1,5 +1,5 @@
 "use client"
-
+import * as NProgress from "nprogress";
 import {
   BadgeCheck,
   Bell,
@@ -29,6 +29,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import {signOutAction} from "@/app-services/signout.service";
 
 export function NavUser({
   user,
@@ -102,7 +103,12 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem className="hover:bg-gray-200 focus:outline-none" onSelect={async () => {
+              NProgress.start();
+              await signOutAction().then(() => {
+              NProgress.remove();
+              });
+            }} >
               <LogOut />
               Log out
             </DropdownMenuItem>

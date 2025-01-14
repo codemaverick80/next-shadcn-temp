@@ -1,36 +1,112 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+### `pnpm` package manager
 
-## Getting Started
-
-First, run the development server:
-
+### Install packages
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+#install all the packages
+pnpm i
+
+# build the project to make sure there are no error
+pnpm build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### PostgreSQL database `nextjs-Oauth-demo`
+Make sure `nextjs-Oauth-demo` database is created on PostgreSQL
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### `.env or .env.local` variables
 
-## Learn More
+```bash
+HOST_NAME=http://localhost:3000
+## GOOGLE OAUTH
+GOOGLE_CLIENT_ID=""
+GOOGLE_CLIENT_SECRET=""
 
-To learn more about Next.js, take a look at the following resources:
+## DATABASE
+DATABASE_URL="postgresql://<db-user-name>:<db-user-password>@localhost:5432/nextjs-Oauth-demo"
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Google cloud console
+ - https://console.cloud.google.com/
+ - sign into google cloud
+ - Go to APIs and Services
+ - Go to Credentials
+ - Click on `Create Credentials`
+ - Choose `OAuth Client ID`
+ - Choose `Web Application` as Application type
+ - Name your application `nextjs-oauth-app`
+ - Add `http://localhost:3000` as Authorised JavaScript origins
+ - Add `http://localhost:3000/api/login/google/callback` as Authorised redirect URIs
+ - Click [Configure Consent Screen]
+ - Add userinfo.email & userinfo.profile to scope and Save and Continue.
+ - Go to credential and click on `nextjs-oauth-app`
+ - Copy both Client ID and Client secret to .env file variable
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Database migration
+Run following command to migrate database schema 
+```bash
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+ pnpm db:generate
+ 
+ pnpm db:migrate
+ 
+ ```
+
+### Run application
+
+```bash
+
+pnpm dev
+
+```
+
+
+
+
+
+
+
+
+
+Open [http://localhost:3002](http://localhost:3000) with your browser to see the result.
+
+
+### Authentication
+
+ - Install following npm packages
+
+```bash
+pnpm add @oslojs/encoding @oslojs/crypto
+```
+
+ - Create a `auth.ts` file inside `src` folder.
+
+ - Create a `session.ts` file inside `src/lib/`.
+
+ - Login page => `src/(auth)/login/page.tsx`.
+
+ - Google OAuth => `src/app/api/login/google`.
+    - `google/route.ts`
+    - `google/callback/route.ts`
+
+
+- GitHub OAuth => `src/app/api/login/github`.
+    - `github/route.ts`
+    - `github/callback/route.ts`
+
+
+- Install Drizzle orm and postgreSQL packages
+```bash
+  pnpm add drizzle-orm pg postgres dotenv
+  pnpm add -D drizzle-kit tsx @types/pg
+```
+
+- Install T3 Env (https://env.t3.gg/docs/introduction)
+```bash 
+pnpm add @t3-oss/env-core zod 
+```
+- Create a `env.mjs` file inside `src` folder and 
+- Create a `.env` file in the root of the project and add database connection variable
+
+
