@@ -1,6 +1,13 @@
-### `pnpm` package manager
+### Sample Nextjs Application using Shadcn-ui.
+ - Nextjs 15
+ - React 19
+ - Shadcn-ui
+ - Goodle OAuth
+ - Drizzele-ORM with PostgreSQL
 
-### Install packages
+#### `pnpm` package manager
+
+#### Install packages
 ```bash
 #install all the packages
 pnpm i
@@ -10,10 +17,10 @@ pnpm build
 ```
 
 
-### PostgreSQL database `nextjs-Oauth-demo`
+#### PostgreSQL database `nextjs-Oauth-demo`
 Make sure `nextjs-Oauth-demo` database is created on PostgreSQL
 
-### `.env or .env.local` variables
+#### `.env or .env.local` variables
 
 ```bash
 HOST_NAME=http://localhost:3000
@@ -26,7 +33,7 @@ DATABASE_URL="postgresql://<db-user-name>:<db-user-password>@localhost:5432/next
 
 ```
 
-### Google cloud console
+#### Google cloud console
  - https://console.cloud.google.com/
  - sign into google cloud
  - Go to APIs and Services
@@ -43,7 +50,7 @@ DATABASE_URL="postgresql://<db-user-name>:<db-user-password>@localhost:5432/next
  - Copy both Client ID and Client secret to .env file variable
 
 
-### Database migration
+#### Database migration
 Run following command to migrate database schema 
 ```bash
 
@@ -53,7 +60,7 @@ Run following command to migrate database schema
  
  ```
 
-### Run application
+#### Run application
 
 ```bash
 
@@ -72,7 +79,7 @@ pnpm dev
 Open [http://localhost:3002](http://localhost:3000) with your browser to see the result.
 
 
-### Authentication
+#### Authentication
 
  - Install following npm packages
 
