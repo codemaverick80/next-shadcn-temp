@@ -46,7 +46,6 @@ export async function getUserProfileService(userId: UserId) {
     if (!profile) {
         throw new Error("User not found");
     }
-
     return profile;
 }
 

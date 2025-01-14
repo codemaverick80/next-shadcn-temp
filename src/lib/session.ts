@@ -12,7 +12,9 @@ export async function setSessionTokenCookie(
     token: string,
     expiresAt: Date
 ): Promise<void> {
+
     const allCookies = await cookies();
+
     allCookies.set(SESSION_COOKIE_NAME, token, {
         httpOnly: true,
         sameSite: "lax",
@@ -20,6 +22,7 @@ export async function setSessionTokenCookie(
         expires: expiresAt,
         path: "/",
     });
+
 }
 
 export async function deleteSessionTokenCookie(): Promise<void> {
@@ -53,6 +56,8 @@ export const assertAuthenticated = async () => {
 };
 
 export async function setSession(userId: UserId) {
+    //get user permissions and roles from database
+
     const token = generateSessionToken();
     const session = await createSession(token, userId);
     await setSessionTokenCookie(token, session.expiresAt);

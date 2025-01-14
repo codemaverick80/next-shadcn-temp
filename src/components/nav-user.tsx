@@ -30,6 +30,10 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import {signOutAction} from "@/app-services/signout.service";
+import {CurrentUserProfile} from "@/types";
+import {useCallback, useEffect, useState} from "react";
+import {getCurrentUser} from "@/lib/session";
+import {getUserProfileService} from "@/app-services/user.services";
 
 export function NavUser({
   user,
@@ -42,6 +46,28 @@ export function NavUser({
 }) {
   const { isMobile } = useSidebar()
 
+
+  const [profile, setProfile] = useState<CurrentUserProfile>();
+  // declare the async data fetching function
+  const getUserProfile = useCallback(async () => {
+    const usr=await getCurrentUser();
+    if(usr){
+      const profile = await getUserProfileService(usr.id) as CurrentUserProfile;
+      setProfile(profile);
+    }
+  }, [])
+  // the useEffect is only there to call `fetchData` at the right time
+  useEffect(() => {
+    getUserProfile()
+        // make sure to catch any error
+        .catch();
+  }, [getUserProfile])
+
+
+
+
+
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -52,12 +78,12 @@ export function NavUser({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} />
+                <AvatarImage src={profile?.image!} alt={profile?.givenName!} />
                 <AvatarFallback className="rounded-lg">CN</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="truncate font-semibold">{profile?.displayName!}</span>
+                <span className="truncate text-xs">{user.email!}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>

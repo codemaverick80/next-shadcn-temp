@@ -8,7 +8,7 @@ export async function createGoogleUser(googleUser: GoogleUser) {
         .insert(users)
         .values({
             email: googleUser.email,
-            name: googleUser.name
+            name: googleUser.name,
         })
         .returning();
     return user;

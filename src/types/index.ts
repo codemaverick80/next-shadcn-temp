@@ -15,3 +15,14 @@ export type UserSession = {
 };
 
 
+export type CurrentUserProfile={
+    id: number ,
+    userId: number,
+    displayName: string | null,
+    givenName: string | null ,
+    familyName: string | null ,
+    imageId: string | null ,
+    image: string | null,
+    bio: string | null,
+}
+

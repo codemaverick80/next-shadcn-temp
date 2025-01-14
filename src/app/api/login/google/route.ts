@@ -6,7 +6,7 @@ export async function GET(): Promise<Response> {
     console.log('google/route   => BEGIN')
     const state = generateState();
     const codeVerifier = generateCodeVerifier();
-    const scopes = ["openid", "profile"];
+    const scopes = ["email", "profile"];
     const url = await googleAuth.createAuthorizationURL(state, codeVerifier,scopes);
 
     const allCookies = await cookies();

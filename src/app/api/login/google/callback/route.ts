@@ -8,8 +8,7 @@ import {getAccountByGoogleIdService} from "@/app-services/account.services";
 import {createGoogleUserService} from "@/app-services/user.services";
 
 
-
-export async function GET(request: Request): Promise<Response> {
+export async function GET(request: Request):Promise<Response>{
     const url = new URL(request.url);
     const code = url.searchParams.get("code");
     const state = url.searchParams.get("state");
@@ -17,16 +16,9 @@ export async function GET(request: Request): Promise<Response> {
     const storedState = allCookies.get("google_oauth_state")?.value ?? null;
     const codeVerifier = allCookies.get("google_code_verifier")?.value ?? null;
 
-    if (
-        !code ||
-        !state ||
-        !storedState ||
-        state !== storedState ||
-        !codeVerifier
-    ) {
-        return new Response(null, {
-            status: 400,
-        });
+    if (!code || !state || !storedState || state !== storedState || !codeVerifier) {
+
+        return new Response(null, {status: 400}) as Response;
     }
 
     try {
@@ -56,7 +48,7 @@ export async function GET(request: Request): Promise<Response> {
                 headers: {
                     'Location': "/dashboard",
                 },
-            });
+            })as Response;
 
 
             // return new Response(null, {
@@ -75,7 +67,7 @@ export async function GET(request: Request): Promise<Response> {
             headers: {
                 Location: "/dashboard",
             },
-        });
+        })as Response;
 
 
     } catch (e) {
@@ -85,11 +77,11 @@ export async function GET(request: Request): Promise<Response> {
             // invalid code
             return new Response(null, {
                 status: 400,
-            });
+            }) as Response;
         }
         return new Response(null, {
             status: 500,
-        });
+        })as Response;
     }
 }
 
