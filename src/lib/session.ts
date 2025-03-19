@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { createSession, generateSessionToken, validateRequest } from "@/auth";
 import { env } from "@/env.mjs";
 import { UserId } from "@/types";
+import { getUserRoles, getUserPermissions } from "@/app-services/auth.services";
 
 const SESSION_COOKIE_NAME = "auth_session";
 
@@ -65,8 +66,30 @@ export const assertAuthenticated = async () => {
 };
 
 export async function setSession(userId: UserId) {
-  //get user permissions and roles from database
   const token = generateSessionToken();
+
+  // Get user roles and permissions
+  const roles = await getUserRoles(userId);
+  const permissions = await getUserPermissions(userId);
+
   const session = await createSession(token, userId);
   await setSessionTokenCookie(token, session.expiresAt);
+
+  // Store roles and permissions in the session cookie
+  const allCookies = await cookies();
+  allCookies.set("user_roles", JSON.stringify(roles.map((r) => r.name)), {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: env.NODE_ENV === "production",
+    expires: session.expiresAt,
+    path: "/",
+  });
+
+  allCookies.set("user_permissions", JSON.stringify(permissions), {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: env.NODE_ENV === "production",
+    expires: session.expiresAt,
+    path: "/",
+  });
 }

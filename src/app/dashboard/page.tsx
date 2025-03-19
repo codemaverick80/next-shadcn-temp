@@ -16,11 +16,24 @@ import {
 } from "@/components/ui/sidebar";
 import { validateRequest } from "@/auth";
 import { redirect } from "next/navigation";
-import DashboardChild from "./child";
+import { getUserRoles, getUserPermissions } from "@/app-services/auth.services";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 export default async function DashboardPage() {
   const { user } = await validateRequest();
   if (!user) redirect("/sign-in");
+
+  // Fetch user roles and permissions
+  const userRoles = await getUserRoles(user.id);
+  const userPermissions = await getUserPermissions(user.id);
+
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -30,31 +43,105 @@ export default async function DashboardPage() {
           <Separator orientation="vertical" className="mr-2 h-4" />
           <Breadcrumb>
             <BreadcrumbList>
-              <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="#">
-                  Building Your Application
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>
-                <BreadcrumbPage>Data Fetching</BreadcrumbPage>
+                <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>Overview</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
           <div className="flex flex-1 justify-end gap-2">
             <ThemeToggle />
-            <ThemeToggle />
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div className="aspect-video rounded-xl bg-muted/50">
-              <DashboardChild />
-            </div>
-            <div className="aspect-video rounded-xl bg-muted/50" />
-            <div className="aspect-video rounded-xl bg-muted/50" />
+
+        <div className="p-6">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {/* User Info Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle>User Information</CardTitle>
+                <CardDescription>Your account details</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <div>
+                    <span className="font-semibold">Email:</span> {user.email}
+                  </div>
+                  <div>
+                    <span className="font-semibold">Name:</span> {user.name}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Roles Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Your Roles</CardTitle>
+                <CardDescription>
+                  Assigned roles and access levels
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  {userRoles.map((role) => (
+                    <Badge key={role.id} variant="secondary">
+                      {role.name}
+                    </Badge>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Permissions Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Your Permissions</CardTitle>
+                <CardDescription>What you can do in the system</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  {userPermissions.map((permission) => (
+                    <Badge key={permission} variant="outline">
+                      {permission}
+                    </Badge>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
           </div>
-          <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
+
+          {/* Role-based content */}
+          <div className="mt-8">
+            {userRoles.some((role) => role.name === "admin") && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Admin Panel</CardTitle>
+                  <CardDescription>
+                    Administrative controls and settings
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p>Admin-only content goes here</p>
+                </CardContent>
+              </Card>
+            )}
+
+            {userPermissions.includes("create:users") && (
+              <Card className="mt-4">
+                <CardHeader>
+                  <CardTitle>User Management</CardTitle>
+                  <CardDescription>Create and manage users</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p>User management content goes here</p>
+                </CardContent>
+              </Card>
+            )}
+          </div>
         </div>
       </SidebarInset>
     </SidebarProvider>

@@ -8,6 +8,13 @@
       "when": 1736804590855,
       "tag": "0000_overconfident_ghost_rider",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1742357147616,
+      "tag": "0001_skinny_exiles",
+      "breakpoints": true
     }
   ]
 }
