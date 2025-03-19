@@ -14,24 +14,24 @@ import { assignDefaultRoleToUser } from "./role.services";
 /* ``````````````````````` Auth related ```````````````````````` */
 
 export async function createGoogleUserService(googleUser: GoogleUser) {
-  let existingUser = await getUserByEmail(googleUser.email);
+  let existingUser = await getUserByEmail(googleUser.email); //INFO: check if user is already exists in 'users' table
 
   if (!existingUser) {
-    existingUser = await createGoogleUser(googleUser);
+    existingUser = await createGoogleUser(googleUser); //INFO: create user in 'users' table
     // Assign default role to new user
-    await assignDefaultRoleToUser(existingUser.id);
+    await assignDefaultRoleToUser(existingUser.id); //INFO: assign default role to user 'user'
   }
 
   //TODO: very first time, we need to flag isApproved=false, once that account is reviewed by admin , then it will be set true
   //INFO: if account isApproved=false then user should not be allowed to do any activities
-  await createAccountViaGoogle(existingUser.id, googleUser.sub);
+  await createAccountViaGoogle(existingUser.id, googleUser.sub); //INFO: create account in 'accounts' table
   await createProfile(
     existingUser.id,
     googleUser.name,
     googleUser.picture,
     googleUser.given_name,
     googleUser.family_name
-  );
+  ); //INFO: create profile in 'profiles' table
   return existingUser.id;
 }
 
